@@ -7,7 +7,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.netbeans.api.project.FileOwnerQuery;
 import org.netbeans.api.project.Project;
-import org.netbeans.modules.scss.options.ScssSettings;
+import org.netbeans.modules.scss.options.*;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.windows.InputOutput;
@@ -19,12 +19,6 @@ class InvalidOutputStyleException extends Exception {
 	}
 }
 
-class InvalidDocBlockException extends Exception {
-
-	InvalidDocBlockException(String value) {
-		super("Invalid format for SCSS doc block line \"" + value + "\" (expected format \"@blockName blockValue\")");
-	}
-}
 
 /**
  * Parse doc block comments at the top of SCSS files, to override global options.
@@ -88,8 +82,6 @@ public class ScssDocblockParser {
 					break;
 				}
 			}
-		} catch (InvalidDocBlockException idbe) {
-			io.getErr().println("Failed to parse SCSS doc block comment: " + idbe.getMessage());
 		} catch (InvalidOutputStyleException iose) {
 			io.getErr().println("Failed to parse SCSS doc block comment: " + iose.getMessage());
 		}
@@ -107,7 +99,7 @@ public class ScssDocblockParser {
 	 * @return void
 	 */
 	private void parseLine(String line, int lineno)
-	    throws InvalidDocBlockException, InvalidOutputStyleException {
+	    throws InvalidOutputStyleException {
 		if (inComment) {
 			if (lineno > MAXLINENO) {
 				complete = true;
@@ -141,7 +133,7 @@ public class ScssDocblockParser {
 	 * @throws InvalidOutputStyleException
 	 */
 	private void parseBlockComment(String line)
-	    throws InvalidDocBlockException, InvalidOutputStyleException {
+	    throws InvalidOutputStyleException {
 		Pattern bcRegex = Pattern.compile("[^@]*@([a-zA-Z0-9]+)\\s+([^\\s]+).*");
 		Matcher bcMatcher = bcRegex.matcher(line);
 		if (bcMatcher.find()) {
@@ -173,7 +165,7 @@ public class ScssDocblockParser {
 				debug("Ignoring unknown doc block tag \"" + blockName + "\"");
 			}
 		} else {
-			throw new InvalidDocBlockException(line);
+			debug("Ignoring unkown doc block tag \""+line+"\"");
 		}
 	}
 

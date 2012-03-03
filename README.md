@@ -26,7 +26,7 @@ body {
 }
 ```
 
-Also, you can specify the output path for the CSS, using the `@outputFile tag:
+Also, you can specify the output path for the CSS, using the `@outputFile` tag:
 
 ```css
 /**
